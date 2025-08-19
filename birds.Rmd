@@ -1,0 +1,89 @@
+---
+title: "Bird Joins"
+author: "Joaquin Sandoval"
+date: "2025-08-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(here)
+library(janitor)
+library(dplyr)
+```
+
+```{r}
+observations <- read_csv(here("data", "52_pp52_birds_1.csv"))
+
+sites <- read_csv(here("data", "52_pp52_sites_1.csv"))
+
+surveys <- read_csv(here("data", "52_pp52_surveys_1.csv"))
+
+taxalist <- read_csv(here("data", "52_pp52_taxalist_1.csv"))
+
+
+# Make subsets of observations 
+
+bird_subset <- observations |> 
+  filter(species_id %in% c("BHCO", "RWBL")) |> 
+  filter(site_id %in% c("LI-W", "NU-C"))
+
+```
+
+# Left Join Practice
+```{r}
+
+#Combining observation df and site df with leftjoin 
+birds_left <- bird_subset |> 
+  left_join(sites)
+
+#Combining observation df and taxalist df with leftjoin 
+birds_left2 <- bird_subset |> 
+  left_join(taxalist)
+
+```
+# Full join practice 
+```{r}
+dim(bird_subset) # 9 columns 
+dim(sites) # 7 columns 
+
+# Full join should be 9+ 7 -1 (same column) = 15
+
+birds_full <- bird_subset |> 
+  full_join(sites)
+
+dim(birds_full)
+```
+# Data wrangling and visualization with birds 
+```{r}
+
+birds <- observations |> 
+  rename(bird_obs_notes = notes) |> 
+  left_join(sites) |> 
+  left_join(surveys) |> 
+  left_join(taxalist) |> 
+  select(survey_date, park_name, common_name, bird_count) 
+
+
+ birds_lubridate <- birds |> 
+   mutate(survey_month = lubridate::month(survey_date)) |> 
+  mutate(survey_month = as.factor(survey_month))|> 
+   dplyr:: relocate(survey_month, .after = survey_date)
+ 
+ birds_lubridate |> 
+   group_by(park_name, survey_month) |> 
+   summarise(total_birds = sum(bird_count)) |> 
+   filter(park_name %in% c("Lindo", "Orme", "Palomino", "Sonrisa"))
+
+```
+ 
+#Task 3 Practice with strings 
+```{r}
+
+```
+
+
