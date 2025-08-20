@@ -12,7 +12,10 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Practice with Strings 
 
 ```{r}
+
 library(stringr) 
+#copy data into rscript with tools, add ins, browse add ins, datapasta paste as dataframe 
+
 library(lubridate)
 alarm_report <- data.frame(
   stringsAsFactors = FALSE,
@@ -24,6 +27,11 @@ alarm_report <- data.frame(
                        "12:41am -- Fire alarm, UCSB fire responded and cleared",
                        "9:58pm -- Campus point emergency siren, UCPD responded")
 )
+
+#1. replace 'Engr' with 'Engineering' in building column 
+#2. separate building column into 'building' and 'wing'
+#3. only retain rows in alarm_message column that has "responded"
+#4. lubridate to correct date format
 
 a <- alarm_report |> 
   mutate(building = str_replace(building, pattern = "Engr", replacement = "Engineering")) |> 
