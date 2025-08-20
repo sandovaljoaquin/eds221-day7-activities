@@ -81,9 +81,4 @@ birds <- observations |>
 
 ```
  
-#Task 3 Practice with strings 
-```{r}
-
-```
-
 
